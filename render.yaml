@@ -91,8 +91,9 @@ services:
         value: /var/data/openats
       - key: RUN_WORKER_IN_API
         value: "true"
+      # Requests pass Render's edge (Cloudflare) and its load balancer: 1 showed Cloudflare's address.
       - key: TRUST_PROXY
-        value: "1"
+        value: "2"
 
   - type: web
     name: openats-web
