@@ -81,6 +81,7 @@ export interface CandidateApplyInput {
   lastName: string;
   email: string;
   phone?: string | null | undefined;
+  linkedinUrl?: string | null | undefined;
   /** The id POST /public/upload/resume gave back for the CV. */
   resumeUploadId?: string | null | undefined;
   customAnswers?: CustomAnswerInput[] | undefined;
@@ -142,6 +143,7 @@ export interface CandidateBasicUpdateInput {
   lastName?: string;
   email?: string;
   phone?: string | null;
+  linkedinUrl?: string | null;
   resumeKey?: string | null;
 }
 
@@ -563,6 +565,7 @@ export const candidateService = {
         lastName: candidates.lastName,
         email: candidates.email,
         phone: candidates.phone,
+        linkedinUrl: candidates.linkedinUrl,
         hasResume: hasResume,
         jobId: candidates.jobId,
         currentStageId: candidates.currentStageId,
@@ -971,6 +974,7 @@ export const candidateService = {
           lastName: data.lastName,
           email: data.email,
           phone: data.phone,
+          linkedinUrl: data.linkedinUrl,
           resumeKey: data.resumeKey,
           updatedAt: new Date(),
         }),

@@ -1,6 +1,7 @@
 "use client";
 
 import { toast } from "sonner";
+import { normalizeLinkedinUrl } from "@/lib/linkedin-url";
 import {
   Dialog,
   DialogClose,
@@ -137,6 +138,19 @@ function EditForm({
           </div>
 
           <div className="col-span-2">
+            <p className="text-[13px] font-medium text-slate-600 dark:text-neutral-400 mb-1.5">
+              LinkedIn
+            </p>
+            <Input
+              type="text"
+              value={formData.linkedinUrl}
+              onChange={(e) => updateField("linkedinUrl", e.target.value)}
+              className={fieldClassName}
+              placeholder="Optional, e.g. linkedin.com/in/name"
+            />
+          </div>
+
+          <div className="col-span-2">
             <div className="mb-1.5 flex items-center justify-between gap-3">
               <p className="text-[13px] font-medium text-slate-600 dark:text-neutral-400">
                 Upload new CV (PDF)
@@ -176,7 +190,13 @@ function EditForm({
             Cancel
           </DialogClose>
           <Button
-            onClick={() => onSave(formData)}
+            onClick={() => {
+              if (formData.linkedinUrl.trim() && !normalizeLinkedinUrl(formData.linkedinUrl)) {
+                toast.error("Enter a LinkedIn profile link, like linkedin.com/in/name");
+                return;
+              }
+              onSave(formData);
+            }}
             disabled={isPending}
             className="h-9 cursor-pointer gap-2 rounded-md border-none px-4 text-sm font-medium text-white shadow-none"
             style={{ backgroundColor: "var(--theme-color)" }}

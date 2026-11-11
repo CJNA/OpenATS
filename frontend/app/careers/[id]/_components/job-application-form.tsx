@@ -20,6 +20,7 @@ import { RadioGroup, RadioGroupItem } from "@/components/ui/radio-group";
 
 import type { JobDetail, CustomQuestion } from "@/types";
 import { formatSalary } from "@/lib/format";
+import { normalizeLinkedinUrl } from "@/lib/linkedin-url";
 
 
 type PublicFetchError = Error & { code?: string; status?: number };
@@ -68,6 +69,8 @@ export function JobApplicationForm({
   const [lastName, setLastName] = useState("");
   const [email, setEmail] = useState("");
   const [phoneNumber, setPhoneNumber] = useState("");
+  const [linkedin, setLinkedin] = useState("");
+  const [linkedinError, setLinkedinError] = useState<string | null>(null);
   const [answers, setAnswers] = useState<Record<number, Answer>>({});
 
   const [resumeFile, setResumeFile] = useState<File | null>(null);
@@ -127,6 +130,14 @@ export function JobApplicationForm({
     e.preventDefault();
     setSubmitError(null);
     setEmailError(null);
+    setLinkedinError(null);
+
+    // The server checks again and stores it in one form.
+    const linkedinUrl = linkedin.trim() ? normalizeLinkedinUrl(linkedin) : null;
+    if (linkedin.trim() && !linkedinUrl) {
+      setLinkedinError("Enter a LinkedIn profile link, like linkedin.com/in/your-name");
+      return;
+    }
 
     // Check checkbox and radio groups here. Server checks again
     const unanswered = questions.find(
@@ -162,6 +173,7 @@ export function JobApplicationForm({
           lastName,
           email,
           phone: phoneNumber ? phoneNumber : undefined,
+          linkedinUrl: linkedinUrl ?? undefined,
           resumeUploadId: resumeUploadId ?? undefined,
           customAnswers,
         }),
@@ -314,6 +326,33 @@ export function JobApplicationForm({
                     className={fieldInput}
                   />
                 </div>
+              </div>
+
+              <div className="space-y-2">
+                <Label htmlFor="apply-linkedin" className="text-slate-700 dark:text-neutral-300 text-sm">
+                  LinkedIn <span className="text-slate-400 dark:text-neutral-500">(optional)</span>
+                </Label>
+                <Input
+                  id="apply-linkedin"
+                  type="text"
+                  inputMode="url"
+                  autoComplete="url"
+                  value={linkedin}
+                  onChange={(e) => {
+                    setLinkedin(e.target.value);
+                    setLinkedinError(null);
+                  }}
+                  placeholder="linkedin.com/in/your-name"
+                  aria-invalid={linkedinError ? true : undefined}
+                  className={`${fieldInput} ${
+                    linkedinError
+                      ? "border border-red-500 focus-visible:border-red-500"
+                      : ""
+                  }`}
+                />
+                {linkedinError && (
+                  <p className="text-sm text-red-600 dark:text-red-400">{linkedinError}</p>
+                )}
               </div>
 
               <div className="space-y-2">

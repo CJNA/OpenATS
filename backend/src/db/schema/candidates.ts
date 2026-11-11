@@ -36,6 +36,8 @@ export const candidates = pgTable(
     lastName: varchar("last_name", { length: 100 }).notNull(),
     email: varchar("email", { length: 255 }).notNull(),
     phone: varchar("phone", { length: 50 }),
+    // Always https on linkedin.com, set through normalizeLinkedinUrl (modules/candidate/linkedin-url.ts).
+    linkedinUrl: varchar("linkedin_url", { length: 500 }),
     // Cloudflare R2 URL
     // The CV's key in the private bucket (resumes/<uuid>.pdf), not a URL. See r2.service.ts.
     resumeKey: varchar("resume_key", { length: 1000 }),

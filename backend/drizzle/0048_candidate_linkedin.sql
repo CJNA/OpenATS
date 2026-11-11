@@ -1,0 +1,1 @@
+ALTER TABLE "candidates" ADD COLUMN "linkedin_url" varchar(500);

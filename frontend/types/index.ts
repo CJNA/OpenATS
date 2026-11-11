@@ -224,6 +224,8 @@ export type Candidate = {
   lastName: string;
   email: string;
   phone: string | null;
+  /** Always https on linkedin.com (the API refuses anything else). */
+  linkedinUrl?: string | null;
   /** Whether a CV is on file. The file itself is only served by /api/candidates/:id/resume. */
   hasResume: boolean;
   jobId: number;
