@@ -9,6 +9,7 @@ import {
   Clock01Icon,
   Edit02Icon,
   File01Icon,
+  Linkedin01Icon,
 } from "@hugeicons/core-free-icons";
 import { Badge } from "@/components/ui/badge";
 import { ScoreBadge } from "@/components/score-badge";
@@ -149,6 +150,20 @@ export function CandidateHeader({
                 />
                 <span>{candidate.phone ?? "No phone"}</span>
               </div>
+              {candidate.linkedinUrl?.startsWith("https://") && (
+                <a
+                  href={candidate.linkedinUrl}
+                  target="_blank"
+                  rel="noopener noreferrer"
+                  className="inline-flex items-center gap-2 font-medium hover:text-[var(--theme-color)]"
+                >
+                  <HugeiconsIcon
+                    icon={Linkedin01Icon}
+                    className="size-5 shrink-0 text-theme dark:text-primary"
+                  />
+                  <span>LinkedIn</span>
+                </a>
+              )}
               <div className="inline-flex items-center gap-2 font-medium">
                 <HugeiconsIcon
                   icon={Clock01Icon}

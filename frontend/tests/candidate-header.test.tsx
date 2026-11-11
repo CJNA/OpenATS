@@ -98,3 +98,21 @@ describe("CandidateHeader actions", () => {
     expect(h.onCancelStageChange).toHaveBeenCalledOnce();
   });
 });
+
+describe("CandidateHeader LinkedIn", () => {
+  it("links to the candidate's LinkedIn in a new tab", () => {
+    renderHeader(candidate({ linkedinUrl: "https://www.linkedin.com/in/someone" }));
+    const link = screen.getByRole("link", { name: "LinkedIn" });
+    expect(link.getAttribute("href")).toBe("https://www.linkedin.com/in/someone");
+    expect(link.getAttribute("target")).toBe("_blank");
+    expect(link.getAttribute("rel")).toContain("noopener");
+  });
+
+  it("shows nothing when there is no link, or it is not https", () => {
+    renderHeader();
+    expect(screen.queryByRole("link", { name: "LinkedIn" })).toBeNull();
+    cleanup();
+    renderHeader(candidate({ linkedinUrl: "javascript:alert(1)" }));
+    expect(screen.queryByRole("link", { name: "LinkedIn" })).toBeNull();
+  });
+});

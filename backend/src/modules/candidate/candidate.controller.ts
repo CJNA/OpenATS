@@ -25,6 +25,7 @@ import { requestCvExtraction } from "../../queues/cv-extract/queue";
 import { notificationService } from "../../shared/services/notification.service";
 import { requestResumeDeletion } from "../../queues/resume-delete/queue";
 import { cvTextService } from "./cv-text.service";
+import { normalizeLinkedinUrl } from "./linkedin-url";
 import { getErrorMessage, safeErrorMessage } from "../../utils/error.utils";
 
 const customAnswerSchema = z.object({
@@ -33,11 +34,26 @@ const customAnswerSchema = z.object({
   optionIds: z.array(z.number().int().positive()).optional(),
 });
 
+// An empty string means "none"; anything else must be a LinkedIn link, stored in one form.
+const linkedinField = z
+  .string()
+  .max(500)
+  .transform((value, ctx) => {
+    if (!value.trim()) return null;
+    const url = normalizeLinkedinUrl(value);
+    if (!url) {
+      ctx.addIssue({ code: "custom", message: "Enter a LinkedIn profile link, like linkedin.com/in/your-name" });
+      return z.NEVER;
+    }
+    return url;
+  });
+
 const candidateApplySchema = z.object({
   firstName: z.string().min(1, "First name is required").max(100),
   lastName: z.string().min(1, "Last name is required").max(100),
   email: z.string().email("Invalid email address").max(255),
   phone: z.string().max(50).optional().nullable(),
+  linkedinUrl: linkedinField.optional().nullable(),
   // The id POST /public/upload/resume gave back for the uploaded file. Never a URL or a key.
   resumeUploadId: z.string().uuid("Upload the CV again").optional().nullable(),
   customAnswers: z.array(customAnswerSchema).optional(),
@@ -63,6 +79,7 @@ const updateCandidateBasicSchema = z.object({
   lastName: z.string().min(1, "Last name is required").max(100).optional(),
   email: z.string().email("Invalid email address").max(255).optional(),
   phone: z.union([z.string().max(50), z.null()]).optional(),
+  linkedinUrl: z.union([linkedinField, z.null()]).optional(),
 });
 
 // A bulk delete has to say exactly what it deletes: either the candidates picked one by one, or
@@ -616,6 +633,8 @@ export const updateCandidateBasicDetails = async (
             ? null
             : undefined
           : req.body?.phone,
+      // "" clears it; the schema turns it into null.
+      linkedinUrl: req.body?.linkedinUrl,
     };
 
     const parsed = updateCandidateBasicSchema.safeParse(normalizedBody);

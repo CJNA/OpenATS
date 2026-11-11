@@ -13,6 +13,7 @@ export interface CandidateFormData {
   lastName: string;
   email: string;
   phone: string;
+  linkedinUrl: string;
   resumeFile: File | null;
 }
 
@@ -22,6 +23,7 @@ export function candidateToFormData(candidate: Candidate): CandidateFormData {
     lastName: candidate.lastName,
     email: candidate.email,
     phone: candidate.phone ?? "",
+    linkedinUrl: candidate.linkedinUrl ?? "",
     resumeFile: null,
   };
 }
@@ -32,6 +34,7 @@ export function buildUpdateFormData(formData: CandidateFormData): FormData {
   fd.append("lastName", formData.lastName.trim());
   fd.append("email", formData.email.trim());
   fd.append("phone", formData.phone.trim());
+  fd.append("linkedinUrl", formData.linkedinUrl.trim());
 
   if (formData.resumeFile) {
     fd.append("resume", formData.resumeFile);
