@@ -47,9 +47,10 @@ Complete the fields in this order:
 3. **Employment Type**: choose **Full Time**, **Part Time**, **Contract**, **Internship**, or **Freelance**.
 4. **Skills**: add the skills relevant to the role.
 5. **Location**: enter a location, work arrangement, or both, such as `Colombo, Sri Lanka (Hybrid)`.
-6. **Job Description**: write the role description. Use the editor toolbar for headings, bold text, italic text, bulleted lists, and numbered lists.
+6. **Replies go to** (optional): the email address that should get candidates' replies to this job's automatic emails, such as the person hiring for it. Those are the emails OpenATS sends by itself: application received, assessment, assignment and interview invitations, and offers. Leave it empty and replies go to the address OpenATS sends from. An email you write yourself from a candidate's page always takes replies to you. This address is never shown on the careers page.
+7. **Job Description**: write the role description. Use the editor toolbar for headings, bold text, italic text, bulleted lists, and numbered lists.
 
-Job title, department, and employment type are required before **Save Job** becomes available. Location, skills, and the description can be completed according to the role.
+Job title, department, and employment type are required before **Save Job** becomes available. Location, the reply address, skills, and the description can be completed according to the role.
 
 ### Add skills
 

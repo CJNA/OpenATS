@@ -7,6 +7,7 @@ import { JobFormHeader } from "./job-form-header";
 import { JobBasicInfo } from "./job-basic-info";
 import { SkillsInput } from "./skills-input";
 import { LocationInput } from "./location-input";
+import { ReplyToInput } from "./reply-to-input";
 import { JobDescriptionSection } from "./job-description";
 import { SalarySection } from "./salary";
 import { FormActions } from "./form-actions";
@@ -91,6 +92,11 @@ export function JobForm({
         <LocationInput
           value={values.location}
           onChange={(v) => set("location", v)}
+        />
+
+        <ReplyToInput
+          value={values.replyToEmail}
+          onChange={(v) => set("replyToEmail", v)}
         />
 
         <JobDescriptionSection

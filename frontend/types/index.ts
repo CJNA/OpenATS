@@ -10,6 +10,8 @@ export type Job = {
     | "internship"
     | "freelance";
   location: string | null;
+  /** Where candidates' replies to this job's automatic emails go. Null: the sending address. */
+  replyToEmail?: string | null;
   description: string | null;
   salaryType: "fixed" | "range" | null;
   currency: string | null;

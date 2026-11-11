@@ -59,6 +59,10 @@ export const jobs = pgTable(
     scoreWeightRating: integer("score_weight_rating").notNull().default(10),
     scoreWeightInterview: integer("score_weight_interview").notNull().default(30),
 
+    // Where candidates' replies to this job's automatic emails go, such as the person hiring for
+    // it. Null sends them to MAIL_FROM. Never shown on the careers page.
+    replyToEmail: varchar("reply_to_email", { length: 255 }),
+
     applicationEmailTemplateId: integer("application_email_template_id").references(
       () => templates.id,
       { onDelete: "set null" },

@@ -6,6 +6,7 @@ const base = {
   departmentId: 3,
   employmentType: "full_time" as const,
   location: "",
+  replyToEmail: "",
   description: "",
   skills: [] as string[],
   isSalaryInfoIncluded: false,
@@ -29,7 +30,12 @@ describe("buildJobPayload", () => {
     const payload = buildJobPayload(base);
 
     expect(payload.location).toBeUndefined();
+    expect(payload.replyToEmail).toBeUndefined();
     expect(payload.description).toBeUndefined();
+  });
+
+  it("sends the reply address trimmed", () => {
+    expect(buildJobPayload({ ...base, replyToEmail: " jay@example.com " }).replyToEmail).toBe("jay@example.com");
   });
 
   it("clears every salary field when salary info is switched off", () => {
@@ -125,5 +131,17 @@ describe("buildUpdateJobPayload", () => {
     expect(update.salaryType).toBe(create.salaryType);
     expect(update.salaryMin).toBe(50000);
     expect(update.salaryMax).toBe(80000);
+  });
+});
+
+describe("the reply address on an edit", () => {
+  it("is sent as null when emptied, so replies go back to the sending address", () => {
+    const payload = buildUpdateJobPayload({ ...base, replyToEmail: "  ", status: "draft" });
+    expect(payload.replyToEmail).toBeNull();
+  });
+
+  it("is sent trimmed when set", () => {
+    const payload = buildUpdateJobPayload({ ...base, replyToEmail: " cj@example.com", status: "draft" });
+    expect(payload.replyToEmail).toBe("cj@example.com");
   });
 });

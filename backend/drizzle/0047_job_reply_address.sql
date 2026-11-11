@@ -1,0 +1,1 @@
+ALTER TABLE "jobs" ADD COLUMN "reply_to_email" varchar(255);
