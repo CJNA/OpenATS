@@ -45,6 +45,11 @@ const createJobSchema = z
     departmentId: z.number().int().positive("Department is required"),
     employmentType: employmentTypeEnum,
     location: z.string().max(255).optional().nullable(),
+    // Empty clears it, so replies go back to the company's sending address.
+    replyToEmail: z
+      .union([z.string().trim().email("Enter a valid reply address").max(255), z.literal(""), z.null()])
+      .optional()
+      .transform((v) => (v === "" ? null : v)),
     description: z.string().optional().nullable(),
     skills: z.array(z.string().min(1).max(100)).optional(),
     salaryType: z.enum(["fixed", "range"]).optional().nullable(),
@@ -84,6 +89,11 @@ const updateJobSchema = z
     .optional(),
   employmentType: employmentTypeEnum.optional(),
   location: z.union([z.string().max(255), z.null(), z.undefined()]).optional(),
+  // Empty clears it, so replies go back to the company's sending address.
+  replyToEmail: z
+    .union([z.string().trim().email("Enter a valid reply address").max(255), z.literal(""), z.null()])
+    .optional()
+    .transform((v) => (v === "" ? null : v)),
   description: z.union([z.string(), z.null(), z.undefined()]).optional(),
   skills: z.array(z.string().min(1).max(100)).optional(),
   salaryType: z.enum(["fixed", "range"]).optional().nullable(),
@@ -295,6 +305,7 @@ export const createJob = async (req: Request, res: Response) => {
       ...parsed.data,
       createdBy: req.user.id,
       location: parsed.data.location ?? null,
+      replyToEmail: parsed.data.replyToEmail ?? null,
       description: parsed.data.description ?? null,
       skills: parsed.data.skills ?? [],
       salaryType: parsed.data.salaryType ?? null,

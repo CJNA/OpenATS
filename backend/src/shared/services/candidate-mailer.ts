@@ -1,6 +1,6 @@
 import { db } from "../../db";
 import { eq } from "drizzle-orm";
-import { candidates, company, emailMessages } from "../../db/schema";
+import { candidates, company, emailMessages, jobs } from "../../db/schema";
 import logger from "../../utils/logger";
 import { mailService } from "./mail.service";
 import { notificationService } from "./notification.service";
@@ -30,6 +30,7 @@ export interface CandidateEmailInput {
   /** The user who caused it. Left out for emails the system sends by itself. */
   sentBy?: number | null;
   templateId?: number | null;
+  /** Left out, the reply address set on the candidate's job is used, if it has one. */
   replyTo?: string | undefined;
 }
 
@@ -64,18 +65,40 @@ export async function emailContext(purpose: SystemEmailPurpose) {
 }
 
 /**
+ * Where replies to an email about this candidate go when the caller set none: the reply address
+ * on their job. Undefined when the job has none, so replies go to MAIL_FROM. A failed lookup is
+ * logged and treated as none, because the email matters more than where its replies land.
+ */
+export async function jobReplyTo(candidateId: number): Promise<string | undefined> {
+  try {
+    const [row] = await db
+      .select({ replyTo: jobs.replyToEmail })
+      .from(candidates)
+      .innerJoin(jobs, eq(jobs.id, candidates.jobId))
+      .where(eq(candidates.id, candidateId));
+    return row?.replyTo ?? undefined;
+  } catch (err) {
+    logger.error(
+      `Reply address for candidate ${candidateId} could not be read: ${err instanceof Error ? err.message : String(err)}`,
+    );
+    return undefined;
+  }
+}
+
+/**
  * The one way an email reaches a candidate. It sends, then writes the result to the email
  * history whether it worked or not, and never throws: the caller decides whether a failed
  * email should fail what it was doing.
  */
 export async function sendCandidateEmail(input: CandidateEmailInput): Promise<CandidateEmailResult> {
   let error: string | undefined;
+  const replyTo = input.replyTo || (await jobReplyTo(input.candidateId));
   try {
     await mailService.sendEmail({
       to: input.to,
       subject: input.subject,
       html: input.html,
-      ...(input.replyTo ? { replyTo: input.replyTo } : {}),
+      ...(replyTo ? { replyTo } : {}),
     });
   } catch (err) {
     error = err instanceof Error ? err.message : "The email could not be sent";

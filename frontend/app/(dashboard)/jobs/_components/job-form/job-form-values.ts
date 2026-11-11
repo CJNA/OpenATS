@@ -6,6 +6,8 @@ export interface JobFormValues {
   employmentType: Job["employmentType"] | null;
   skills: string[];
   location: string;
+  /** Where candidates' replies to this job's automatic emails go; empty for the sending address. */
+  replyToEmail: string;
   description: string;
   isSalaryInfoIncluded: boolean;
   salaryType: "range" | "fixed";
@@ -29,6 +31,7 @@ export const EMPTY_JOB_FORM_VALUES: JobFormValues = {
   employmentType: null,
   skills: [],
   location: "",
+  replyToEmail: "",
   description: "",
   isSalaryInfoIncluded: true,
   salaryType: "range",
@@ -47,6 +50,7 @@ export function jobToFormValues(job: JobDetail): JobFormValues {
     employmentType: job.employmentType ?? null,
     skills: job.skills ?? [],
     location: job.location ?? "",
+    replyToEmail: job.replyToEmail ?? "",
     description: job.description ?? "",
     isSalaryInfoIncluded: Boolean(job.salaryType),
     salaryType: job.salaryType === "fixed" ? "fixed" : "range",

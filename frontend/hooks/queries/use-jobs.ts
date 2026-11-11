@@ -105,6 +105,7 @@ export function useCreateJob() {
       departmentId: number;
       employmentType: string;
       location?: string;
+      replyToEmail?: string;
       description?: string;
       skills?: string[];
       salaryType?: "fixed" | "range" | null;
@@ -133,6 +134,7 @@ export function useUpdateJob(jobId: number) {
       departmentId?: number;
       employmentType?: Job["employmentType"];
       location?: string | null;
+      replyToEmail?: string | null;
       description?: string | null;
       skills?: string[];
       salaryType?: "fixed" | "range" | null;

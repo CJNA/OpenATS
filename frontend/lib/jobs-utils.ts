@@ -12,6 +12,7 @@ export type CreateJobPayload = Pick<
   | "status"
 > & {
   location?: string;
+  replyToEmail?: string;
   description?: string;
   salaryFixed?: number | null;
   salaryMin?: number | null;
@@ -23,6 +24,7 @@ interface BuildJobPayloadParams {
   departmentId: number;
   employmentType: Job["employmentType"];
   location: string;
+  replyToEmail: string;
   description: string;
   skills: string[];
   isSalaryInfoIncluded: boolean;
@@ -106,6 +108,7 @@ export function buildJobPayload(
     departmentId,
     employmentType,
     location,
+    replyToEmail,
     description,
     skills,
   } = params;
@@ -117,6 +120,7 @@ export function buildJobPayload(
     departmentId,
     employmentType,
     location: location || undefined,
+    replyToEmail: replyToEmail.trim() || undefined,
     description: description || undefined,
     skills: skills.length > 0 ? skills : [],
     status: "draft",
@@ -129,6 +133,7 @@ export type UpdateJobPayload = ReturnType<typeof buildSalaryPayload> & {
   departmentId: number;
   employmentType: Job["employmentType"];
   location: string | null;
+  replyToEmail: string | null;
   description: string | null;
   skills: string[];
   status: Job["status"];
@@ -143,6 +148,7 @@ export function buildUpdateJobPayload(
     departmentId: params.departmentId,
     employmentType: params.employmentType,
     location: params.location || null,
+    replyToEmail: params.replyToEmail.trim() || null,
     description: params.description || null,
     skills: params.skills,
     status: params.status,

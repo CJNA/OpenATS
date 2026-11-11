@@ -34,6 +34,7 @@ export type CreateJobInput = {
     | "internship"
     | "freelance";
   location?: string | null;
+  replyToEmail?: string | null;
   description?: string | null;
   skills?: string[];
   salaryType?: "range" | "fixed" | null;
@@ -60,6 +61,7 @@ export type UpdateJobInput = {
     | "internship"
     | "freelance";
   location?: string | null;
+  replyToEmail?: string | null;
   description?: string | null;
   skills?: string[];
   salaryType?: "range" | "fixed" | null;
@@ -252,6 +254,7 @@ export const jobService = {
         departmentId: jobData.departmentId,
         employmentType: jobData.employmentType,
         location: jobData.location ?? null,
+        replyToEmail: jobData.replyToEmail ?? null,
         // Cleaned here, in the one place a description is written, whatever sent it.
         description: sanitizeJobDescription(jobData.description) ?? null,
         salaryType: jobData.salaryType ?? null,
