@@ -3,7 +3,13 @@ import { headers } from "next/headers";
 import { apiFetch } from "./api";
 import { getApiToken } from "./auth/session";
 
-/** What the Express API needs to see about the visitor */
+/**
+ * What the Express API needs to see about the visitor.
+ *
+ * Never `cf-connecting-ip`: Cloudflare refuses any request that already carries it
+ * ("error code: 1000", a 403), so copying it breaks every call when both the website
+ * and the API are behind Cloudflare. Cloudflare adds the visitor to `x-forwarded-for`.
+ */
 export function pickForwardedHeaders(incoming: Headers) {
   const forwarded: Record<string, string> = {};
 
@@ -11,7 +17,6 @@ export function pickForwardedHeaders(incoming: Headers) {
     "user-agent",
     "x-forwarded-for",
     "x-real-ip",
-    "cf-connecting-ip",
     "x-forwarded-proto",
     "x-forwarded-host",
   ]) {
